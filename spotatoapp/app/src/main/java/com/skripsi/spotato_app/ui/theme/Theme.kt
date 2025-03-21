@@ -1,6 +1,5 @@
 package com.skripsi.spotato_app.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +22,8 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Grey90,
     secondaryContainer = Green90,
     onPrimaryContainer = Green10,
-    surface = Green10
+    secondary = Green80,
+    tertiary = Green20
 )
 
 @Composable
