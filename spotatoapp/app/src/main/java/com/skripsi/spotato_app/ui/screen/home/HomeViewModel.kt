@@ -15,6 +15,13 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
         _image.value = uri
     }
 
+    private val _result = MutableStateFlow(3)
+    val result = _result.asStateFlow()
+
+    fun updateResult(result: Int) {
+        _result.value = result
+    }
+
     suspend fun upload(
         file: File
     ): PredictionResponse = repository.upload(file)

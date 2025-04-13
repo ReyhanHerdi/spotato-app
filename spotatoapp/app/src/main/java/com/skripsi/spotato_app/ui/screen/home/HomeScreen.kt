@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,6 +50,7 @@ fun Home(
     val image by viewModel.image.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val result by viewModel.result.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +120,8 @@ fun Home(
                 coroutineScope.launch {
                     try {
                         val file = uploadFile(image.toUri(), context)
-                        viewModel.upload(file)
+                        val prediction = viewModel.upload(file).prediction!!
+                        viewModel.updateResult(prediction)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -127,6 +130,29 @@ fun Home(
         ) {
             Text(text = "Prediksi")
         }
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = when(result) {
+                0 -> "Early Blight"
+                1 -> "Late Blight"
+                2 -> "Healthy"
+                else -> ""
+            },
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 4.dp)
+        )
+        Text(
+            text = when(result) {
+                3 -> ""
+                else -> "Hasil Prediksi"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
