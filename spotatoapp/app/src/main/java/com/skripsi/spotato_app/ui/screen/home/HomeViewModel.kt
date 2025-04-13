@@ -1,14 +1,21 @@
 package com.skripsi.spotato_app.ui.screen.home
 
 import androidx.lifecycle.ViewModel
+import com.skripsi.spotato_app.repository.MainRepository
+import com.skripsi.spotato_app.response.PredictionResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val repository: MainRepository) : ViewModel() {
     private val _image = MutableStateFlow("uri")
     val image = _image.asStateFlow()
 
     fun updateImage(uri: String) {
         _image.value = uri
     }
+
+    suspend fun upload(
+        file: File
+    ): PredictionResponse = repository.upload(file)
 }
