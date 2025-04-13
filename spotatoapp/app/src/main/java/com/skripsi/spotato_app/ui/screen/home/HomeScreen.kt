@@ -19,13 +19,17 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +55,9 @@ fun Home(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val result by viewModel.result.collectAsState()
+    var progress by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -117,13 +124,16 @@ fun Home(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             onClick = {
+                progress = true
                 coroutineScope.launch {
                     try {
                         val file = uploadFile(image.toUri(), context)
                         val prediction = viewModel.upload(file).prediction!!
                         viewModel.updateResult(prediction)
+                        progress = false
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        progress = false
                     }
                 }
             }
@@ -131,6 +141,15 @@ fun Home(
             Text(text = "Prediksi")
         }
         Spacer(modifier = Modifier.weight(1f))
+        if (progress) {
+            LinearProgressIndicator(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                trackColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
+        }
         Text(
             text = when(result) {
                 0 -> "Early Blight"
